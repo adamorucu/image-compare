@@ -44,7 +44,6 @@ class Mixer(nn.Module):
         
     def forward(self, x):
         # Reshape into patches
-        print(x.shape)
         B, C, H, W = x.shape
         # Split into patches
         x = x.unfold(2, self.patch_size, self.patch_size).unfold(3, self.patch_size, self.patch_size)

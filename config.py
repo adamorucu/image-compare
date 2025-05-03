@@ -9,7 +9,7 @@ class TrainingConfig:
     num_workers: int = 4
     
     # Model settings
-    model_type: Literal['mlp', 'cnn', 'resnet', 'mixer'] = 'mlp'
+    model_type: Literal['mlp', 'cnn', 'resnet', 'mixer', 'mycnn'] = 'mlp'
     model_config: str = '2x64'  # For MLP: '2x64', '4x64', '4x512'; For CNN: 'shallow', 'deep'
     
     # Normalization and regularization settings

@@ -85,6 +85,16 @@ def get_model(config):
         in_channels = 1 if config.dataset == 'mnist' else 3
         return create_mixer(num_classes, depth=config.model_config, in_channels=in_channels)
     
+    elif config.model_type == 'mycnn':
+        from models.mycnn import create_shallow_mycnn, create_deep_mycnn
+        num_classes = 10
+        in_channels = 1 if config.dataset == 'mnist' else 3
+        
+        if config.model_config == 'shallow':
+            return create_shallow_mycnn(num_classes, in_channels=in_channels)
+        elif config.model_config == 'deep':
+            return create_deep_mycnn(num_classes, in_channels=in_channels)
+    
     raise ValueError(f"Unsupported model type: {config.model_type}")
 
 def save_checkpoint(model, optimizer, epoch, config):
@@ -102,18 +112,12 @@ def save_checkpoint(model, optimizer, epoch, config):
 
 def load_checkpoint(path, model, optimizer):
     """Load model checkpoint."""
-    from config import TrainingConfig
-    import torch.serialization
-    
-    # Add TrainingConfig to safe globals
-    torch.serialization.add_safe_globals([TrainingConfig])
-    
-    # Load checkpoint with weights_only=False to allow loading the config
-    checkpoint = torch.load(path, weights_only=False)
+    # Load checkpoint
+    checkpoint = torch.load(path)
     model.load_state_dict(checkpoint['model_state_dict'])
     if optimizer is not None:
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-    return checkpoint['epoch'] 
+    return checkpoint['epoch']
 
 class EarlyStopping:
     """Early stopping class."""
